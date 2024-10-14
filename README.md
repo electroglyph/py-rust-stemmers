@@ -9,7 +9,7 @@ py-rust-stemmers is a high-performance Python wrapper around the rust-stemmers l
 ## Installation
 You can install py-rust-stemmers via pip:
 
->pip install py-rust-stemmers
+```pip install py-rust-stemmers```
 
 ## Usage
 Here's a simple example showing how to use py-rust-stemmers to stem words using the Snowball algorithm:
@@ -38,8 +38,8 @@ print(f"Stemmed words (parallel): {stemmed_words_parallel}")
 ```
 ___
 ## Methods
-> stem_word(word: str) -> str
->
+```stem_word(word: str) -> str```
+
 This method stems a single word. It is best used for small or isolated stemming tasks.
 
 Example:
@@ -47,7 +47,7 @@ Example:
 s.stem_word("running")  # Output: "run"
 ```
 ___
-> stem_words(words: List[str]) -> List[str]
+```stem_words(words: List[str]) -> List[str]```
 
 This method stems a list of words sequentially. It is ideal for processing short to moderately sized text sequences.
 
@@ -55,7 +55,7 @@ Example:
 
 ```s.stem_words(["running", "jumps", "easily"])  # Output: ["run", "jump", "easili"]```
 ___
->stem_words_parallel(words: List[str]) -> List[str]```
+```stem_words_parallel(words: List[str]) -> List[str]```
 
 This method stems a list of words in parallel. It provides significant speedup for longer text sequences (e.g., sequences longer than 512 tokens) by utilizing parallel processing. It is ideal for batch processing of large datasets.
 
