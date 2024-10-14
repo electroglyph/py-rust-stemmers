@@ -50,12 +50,16 @@ jobs:
       - name: Upload dist directory as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist-${{ github.run_id }}-${{ matrix.python-version }}-${{ runner.os }}  # Use GitHub run ID for uniqueness
+          name: dist-${{ matrix.python-version }}-${{ runner.os }}  # Use GitHub run ID for uniqueness
           path: dist  # Upload dist directory as an artifact
 
   upload-to-pypi:
-    runs-on: ubuntu-latest  # Ensure this only runs on Linux
-    needs: build  # Only run after the build job completes
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ '3.8', '3.9', '3.10', '3.11' ]  # Match the build matrix
 
     steps:
       - name: Checkout the repository
@@ -64,7 +68,7 @@ jobs:
       - name: Download dist directory artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-${{ github.run_id }}-${{ matrix.python-version }}-${{ runner.os }}  # Match the artifact name here
+          name: dist-${{ matrix.os }}-${{ matrix.python-version }}  # Use the common artifact name
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -75,7 +79,7 @@ jobs:
         run: pip install maturin
 
       - name: Show contents of dist directory
-        run: ls -la dist  # Show the structure of the dist directory before uploading
+        run: ls -la dist
 
       - name: Upload wheels to PyPI
         uses: pypa/gh-action-pypi-publish@v1.5.1
