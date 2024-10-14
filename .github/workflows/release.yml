@@ -68,7 +68,7 @@ jobs:
       - name: Download dist directory artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-${{ matrix.os }}-${{ matrix.python-version }}  # Use the common artifact name
+          name: dist-${{ matrix.python-version }}-${{ matrix.os }}   # Use the common artifact name
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
