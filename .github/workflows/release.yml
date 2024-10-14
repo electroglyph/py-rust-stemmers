@@ -33,14 +33,26 @@ jobs:
           toolchain: stable
           components: rustfmt
 
-      - name: Build wheels
+      - name: Build wheels on macOS and Linux
+        if: runner.os != 'Windows'
         run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            # Install Visual Studio Build Tools for Rust on Windows
-            choco install visualstudio2019buildtools --version=16.11.7
-          fi
-          maturin build --release --out dist
+          maturin build --release --skip-auditwheel --out dist
           ls -la dist  # List contents of dist to verify wheels are built
+
+      - name: Build wheels on Windows
+        if: runner.os == 'Windows'
+        run: |
+          # Install Visual Studio Build Tools for Rust on Windows
+          choco install visualstudio2019buildtools --version=16.11.7
+          maturin build --release --out dist
+          dir dist  # List contents of dist to verify wheels are built
+
+      - name: Upload dist directory as artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist  # Upload dist directory as an artifact
 
       - name: Upload dist directory as artifact
         uses: actions/upload-artifact@v4
