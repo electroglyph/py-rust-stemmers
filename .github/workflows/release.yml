@@ -35,7 +35,9 @@ jobs:
 
       - name: Build wheels on macOS and Linux
         if: runner.os != 'Windows'
-        run: maturin build --release --skip-auditwheel
+        run: |
+          maturin build --release --skip-auditwheel
+          ls -l dist  # List files in the dist directory to check output
 
       - name: Build wheels on Windows
         if: runner.os == 'Windows'
@@ -43,6 +45,7 @@ jobs:
           # Install Visual Studio Build Tools for Rust on Windows
           choco install visualstudio2019buildtools --version=16.11.7
           maturin build --release
+          dir dist  # List files in the dist directory to check output
 
   upload-to-pypi:
     runs-on: ubuntu-latest  # Ensure this only runs on Linux
@@ -68,3 +71,4 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.pypi_token }}
+          packages_dir: dist  # Ensure this points to the correct directory
