@@ -1,0 +1,23 @@
+[build-system]
+requires = ["maturin>=0.14,<0.15"]
+build-backend = "maturin"
+
+[project]
+name = "py-rust-stemmers"
+description = "Fast snowball-based dependecy free lib to stem words"
+repository = "https://github.com/qdrant/py-rust-stemmers"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+
+]
+license = { text = "MIT" }
+
+[project.urls]
+homepage = "https://github.com/pmbaumgartner/py-rust-stemmers"
+documentation = "https://github.com/pmbaumgartner/py-rust-stemmers"
+repository = "https://github.com/pmbaumgartner/py-rust-stemmers"
