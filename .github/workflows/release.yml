@@ -45,15 +45,12 @@ jobs:
       - name: Upload dist directory as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ github.run_id }}  # Use GitHub run ID for uniqueness
           path: dist  # Upload dist directory as an artifact
 
   upload-to-pypi:
     runs-on: ubuntu-latest  # Ensure this only runs on Linux
     needs: build  # Only run after the build job completes
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
       - name: Checkout the repository
@@ -62,7 +59,7 @@ jobs:
       - name: Download dist directory artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist  # Download the dist artifact uploaded in the build job
+          name: dist-${{ github.run_id }}  # Match the artifact name here
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -80,8 +77,4 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.pypi_token }}
-          packages_dir: dist
-          verify_metadata: true
-          skip_existing: false
-          verbose: false
-          print_hash: false
+          packages_dir: dist  # Ensure it points to the correct output directory
