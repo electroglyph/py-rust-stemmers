@@ -63,5 +63,14 @@ Example:
 
 ```s.stem_words_parallel(["running", "jumps", "easily"])  # Output: ["run", "jump", "easili"]```
 
+## Build from source
+* Install maturin
+* Go to project dir
+
+```
+maturin build --release
+pip install target/wheels/py_rust_stemmers-<your os/architecture/etc>.whl
+```
+
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
