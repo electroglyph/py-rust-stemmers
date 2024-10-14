@@ -35,9 +35,7 @@ jobs:
 
       - name: Build wheels on macOS and Linux
         if: runner.os != 'Windows'
-        run: |
-          maturin build --release --skip-auditwheel
-          ls -l dist  # List files in the dist directory to check output
+        run: maturin build --release --skip-auditwheel
 
       - name: Build wheels on Windows
         if: runner.os == 'Windows'
@@ -45,30 +43,32 @@ jobs:
           # Install Visual Studio Build Tools for Rust on Windows
           choco install visualstudio2019buildtools --version=16.11.7
           maturin build --release
-          dir dist  # List files in the dist directory to check output
 
-  upload-to-pypi:
-    runs-on: ubuntu-latest  # Ensure this only runs on Linux
-    needs: build  # Only run after the build job completes
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+upload-to-pypi:
+  runs-on: ubuntu-latest  # Ensure this only runs on Linux
+  needs: build  # Only run after the build job completes
+  strategy:
+    matrix:
+      python-version: ['3.8', '3.9', '3.10', '3.11']
 
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
+  steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Install maturin
-        run: pip install maturin
+    - name: Install maturin
+      run: pip install maturin
 
-      - name: Upload wheels to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.5.1
-        with:
-          user: __token__
-          password: ${{ secrets.pypi_token }}
-          packages_dir: dist  # Ensure this points to the correct directory
+    - name: List the contents of the dist directory
+      run: ls dist  # This will help debug if the dist directory is empty
+
+    - name: Upload wheels to PyPI
+      uses: pypa/gh-action-pypi-publish@v1.5.1
+      with:
+        user: __token__
+        password: ${{ secrets.pypi_token }}
+        packages_dir: dist  # Specify the directory to find packages
