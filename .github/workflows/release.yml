@@ -48,13 +48,6 @@ jobs:
           dir dist  # List contents of dist to verify wheels are built
 
       - name: Upload dist directory as artifact
-        if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-${{ github.run_id }}-${{ matrix.python-version }}-${{ runner.os }}
-          path: dist  # Upload dist directory as an artifact
-
-      - name: Upload dist directory as artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ github.run_id }}-${{ matrix.python-version }}-${{ runner.os }}  # Use GitHub run ID for uniqueness
