@@ -48,6 +48,20 @@ jobs:
           maturin build --release --out dist
           dir dist  # List contents of dist to verify wheels are built
 
+      - name: Upload dist directory as artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist  # Upload dist directory as an artifact
+
+      - name: Upload dist directory as artifact
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist  # Upload dist directory as an artifact
+
   upload-to-pypi:
     runs-on: ubuntu-latest  # Ensure this only runs on Linux
     needs: build  # Only run after the build job completes
@@ -58,6 +72,11 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
+
+      - name: Download dist directory artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dist  # Download the dist artifact uploaded in the build job
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
