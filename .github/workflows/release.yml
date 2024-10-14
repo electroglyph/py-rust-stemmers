@@ -49,15 +49,15 @@ jobs:
 
       - name: Upload dist directory as artifact
         if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ github.run_id }}-${{ matrix.python-version }}-${{ runner.os }}
           path: dist  # Upload dist directory as an artifact
 
       - name: Upload dist directory as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist-${{ github.run_id }}-${{ matrix.python-version }}  # Use GitHub run ID for uniqueness
+          name: dist-${{ github.run_id }}-${{ matrix.python-version }}-${{ runner.os }}  # Use GitHub run ID for uniqueness
           path: dist  # Upload dist directory as an artifact
 
   upload-to-pypi:
