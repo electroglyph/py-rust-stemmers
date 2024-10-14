@@ -78,8 +78,8 @@ jobs:
       - name: Install maturin
         run: pip install maturin
 
-      - name: Show contents of dist directory
-        run: ls -la dist
+      - name: Show contents of directory
+        run: ls -la
 
       - name: Upload wheels to PyPI
         uses: pypa/gh-action-pypi-publish@v1.5.1
