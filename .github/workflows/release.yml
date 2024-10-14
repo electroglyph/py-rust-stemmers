@@ -45,7 +45,7 @@ jobs:
       - name: Upload dist directory as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist-${{ github.run_id }}  # Use GitHub run ID for uniqueness
+          name: dist-${{ github.run_id }}-${{ matrix.python-version }}  # Use GitHub run ID for uniqueness
           path: dist  # Upload dist directory as an artifact
 
   upload-to-pypi:
@@ -59,7 +59,7 @@ jobs:
       - name: Download dist directory artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-${{ github.run_id }}  # Match the artifact name here
+          name: dist-${{ github.run_id }}-${{ matrix.python-version }}  # Match the artifact name here
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
