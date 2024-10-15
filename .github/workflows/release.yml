@@ -36,9 +36,9 @@ jobs:
       - name: Publish to PyPI on macOS and Linux
         if: runner.os != 'Windows'
         env:
-          MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          maturin publish --skip-existing 
+          maturin publish --skip-existing --username __token__
 
       - name: Publish to PyPI on Windows
         if: runner.os == 'Windows'
@@ -48,3 +48,4 @@ jobs:
           # Install Visual Studio Build Tools for Rust on Windows
           choco install visualstudio2019buildtools --version=16.11.7
           maturin publish --skip-existing --username __token__
+
