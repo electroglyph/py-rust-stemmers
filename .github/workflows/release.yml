@@ -59,10 +59,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'  # Use any supported version
+          python-version: ${{ matrix.python-version }}  # Use any supported version
 
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==2.16.2
