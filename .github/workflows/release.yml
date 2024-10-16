@@ -87,10 +87,10 @@ jobs:
           toolchain: stable
           components: rustfmt
 
-      - name: Set the correct architecture and manylinux tag
+      - name: Set the correct architecture and build the wheel for ARM
         run: |
           export CARGO_BUILD_TARGET=aarch64-unknown-linux-gnu
           export PYO3_CROSS_LIB_DIR=/usr/aarch64-linux-gnu  # Location for cross-compiling
-          maturin publish --skip-existing --target aarch64-unknown-linux-gnu --compatibility manylinux2014_aarch64
+          maturin publish --skip-existing --target aarch64-unknown-linux-gnu
         env:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
