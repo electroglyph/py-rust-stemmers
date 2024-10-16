@@ -33,33 +33,36 @@ jobs:
           toolchain: stable
           components: rustfmt
 
-      # Step to set up QEMU for ARM support
+      # ARM Linux specific steps
       - name: Set up QEMU
+        if: runner.os == 'Linux'
         uses: docker/setup-qemu-action@v2
 
-      # Step to add the aarch64 target
       - name: Add aarch64 target
+        if: runner.os == 'Linux'
         run: rustup target add aarch64-unknown-linux-gnu
 
-      # Step to install cross-compilation tools
       - name: Install cross-compilation tools
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu
 
-      # Step to set the linker for ARM target
       - name: Set linker
+        if: runner.os == 'Linux'
         run: echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
 
-      # Step to publish to PyPI on macOS and Linux
       - name: Publish to PyPI on macOS and Linux
         if: runner.os != 'Windows'
         env:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: |
+          # Build for x86_64
           maturin publish --skip-existing --username __token__
 
-      # Step to publish to PyPI on Windows
+          # Build for aarch64
+          maturin publish --skip-existing --username __token__ --target aarch64-unknown-linux-gnu
+
       - name: Publish to PyPI on Windows
         if: runner.os == 'Windows'
         env:
@@ -68,9 +71,3 @@ jobs:
           # Install Visual Studio Build Tools for Rust on Windows
           choco install visualstudio2019buildtools --version=16.11.7
           maturin publish --skip-existing --username __token__
-
-      # Step to build for aarch64
-      - name: Build wheels for ARM architecture
-        if: runner.os == 'ubuntu-latest' # Only run on Linux for ARM
-        run: |
-          maturin build --release --target aarch64-unknown-linux-gnu
