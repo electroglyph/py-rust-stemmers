@@ -57,35 +57,35 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']  # Supported Python versions
 
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Add aarch64 target
-        run: rustup target add aarch64-unknown-linux-gnu
-
-      - name: Install cross-compilation tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu
-
-      - name: Set linker
-        run: echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
-
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.8'  # Use any supported version
 
-      - name: Install maturin
-        run: |
-          python -m pip install --upgrade pip
-          pip install maturin
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==2.16.2
 
-      - name: Build and publish wheels for ARM
+      - name: Build wheels
         env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          CIBW_ARCHS_LINUX: aarch64
+          CIBW_BEFORE_ALL_LINUX: "curl https://sh.rustup.rs -sSf | sh -s -- -y && source $HOME/.cargo/env && rustup target add aarch64-unknown-linux-gnu"
+          CIBW_ENVIRONMENT: 'PATH="$HOME/.cargo/bin:$PATH" CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER="aarch64-linux-gnu-gcc"'
+          CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-*"
         run: |
-          maturin publish --skip-existing --username __token__ --target aarch64-unknown-linux-gnu
+          python -m cibuildwheel --output-dir wheelhouse
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: ./wheelhouse/*.whl
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          pip install twine
+          twine upload --skip-existing wheelhouse/*.whl
