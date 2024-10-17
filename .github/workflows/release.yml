@@ -76,4 +76,4 @@ jobs:
         env:
           MATURIN_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
-          maturin publish --username __token__ --password $MATURIN_PASSWORD --target aarch64-unknown-linux-gnu --zig -i python ${{ matrix.python-version }}
+          maturin publish --username __token__ --password $MATURIN_PASSWORD --target aarch64-unknown-linux-gnu --zig -i python ${{ matrix.python-version }} -skip-existing
