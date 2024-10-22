@@ -5,4 +5,3 @@ description = "A short description of your package"
 
 # Include a long description
 readme = "README.md"
-readme-content-type = "text/markdown"  # Or "text/x-rst" if using reStructuredText
