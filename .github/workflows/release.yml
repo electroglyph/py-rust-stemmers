@@ -156,7 +156,7 @@ jobs:
         name: Install built wheel
         with:
           arch: aarch64
-          distro: ubuntu:22.04
+          distro: ubuntu22.04
           githubToken: ${{ github.token }}
           install: |
             apt-get update
