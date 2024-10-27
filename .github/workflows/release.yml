@@ -1,12 +1,12 @@
-name: Release
+name: Build and publish wheels
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
+    tags:
+      - "v*.*.*"  # Only run on version tags like v0.1.0
+
 
 
 concurrency:
@@ -285,7 +285,8 @@ jobs:
       - musllinux
       - musllinux-cross
       - pypy
-    if: ${{ github.ref == 'refs/heads/master' }}
+    # Only run if triggered by a tag push
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/download-artifact@v2
         with:
