@@ -152,10 +152,12 @@ jobs:
           args: --release --out dist -i ${{ matrix.python-version }}
           maturin-version: "v1.7.4"
       - uses: uraimo/run-on-arch-action@v2.8.1
+        if: matrix.target == 'aarch64'
         name: Install built wheel
         with:
-          arch: ${{ matrix.target }}
-          distro: ubuntu20.04
+          arch: none
+          distro: none
+          base_image: '--platform=linux/aarch64 ubuntu:20.04'
           githubToken: ${{ github.token }}
           install: |
             apt-get update
