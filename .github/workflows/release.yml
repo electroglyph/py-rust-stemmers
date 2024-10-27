@@ -21,6 +21,9 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
+        target:
+          - x86_64
+          - arm64
         python-version:
           - '3.8'
           - '3.9'
@@ -41,25 +44,31 @@ jobs:
       - name: Build wheels - x86_64
         uses: PyO3/maturin-action@v1
         with:
-          target: x86_64
+          target: ${{ matrix.target }}
           args: --release --out dist --sdist
           maturin-version: "v1.7.4"
-      - name: Install built wheel - x86_64
+      - name: Install built wheel
         run: |
-          pip install dist/${{ env.PACKAGE_NAME }}-*.whl --force-reinstall
+          pip install --find-links dist/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Build wheels - universal2
         uses: PyO3/maturin-action@v1
         with:
-          args: --release --universal2 --out dist
+          args: --release --universal2 --out dist-universal2
           maturin-version: "v1.7.4"
       - name: Install built wheel - universal2
         run: |
-          pip install dist/${{ env.PACKAGE_NAME }}-*universal2.whl --force-reinstall
+          pip install --find-links dist-universal2/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
           name: wheels
           path: dist
+      - name: Upload wheels - universal2
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels
+          path: dist-universal2
+
 
   windows:
     runs-on: windows-latest
@@ -92,7 +101,7 @@ jobs:
       - name: Install built wheel
         shell: bash
         run: |
-          python -m pip install dist/${{ env.PACKAGE_NAME }}-*.whl --force-reinstall
+          python -m pip install --find-links dist/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -125,7 +134,7 @@ jobs:
       - name: Install built wheel
         if: matrix.target == 'x86_64'
         run: |
-          pip install dist/${{ env.PACKAGE_NAME }}-*.whl --force-reinstall
+          pip install --find-links dist/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -287,7 +296,7 @@ jobs:
       - name: Install built wheel
         if: matrix.target == 'x86_64'
         run: |
-          pip install dist/${{ env.PACKAGE_NAME }}-*.whl --force-reinstall
+          pip install --find-links dist/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
