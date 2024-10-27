@@ -92,7 +92,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.target }}-${{ matrix.python-version }}-windows
+          name: wheels-${{ matrix.python-version }}-windows
           path: dist
 
   linux:
@@ -286,8 +286,7 @@ jobs:
           name: wheels-${{ matrix.os }}-${{ matrix.target }}-${{ matrix.python-version }}-pypy
           path: dist
 
-  release:
-    name: Release
+  merge-artifacts:
     runs-on: ubuntu-latest
     needs:
       - macos
@@ -297,6 +296,18 @@ jobs:
       - musllinux
       - musllinux-cross
       - pypy
+    steps:
+      - uses: actions/upload-artifact/merge@v4
+        with:
+          name: wheels
+          pattern: wheels-*
+          delete-merged: true
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+      - merge-artifacts
     # Only run if triggered by a tag push
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
