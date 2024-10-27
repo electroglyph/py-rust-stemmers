@@ -152,10 +152,10 @@ jobs:
           args: --release --out dist -i ${{ matrix.python-version }}
           maturin-version: "v1.7.4"
       - uses: uraimo/run-on-arch-action@v2.8.1
-        if: matrix.target == 'aarch64'
         name: Install built wheel
+        if: matrix.python-version == '3.10' # Only this version is available for ubuntu22.04 by default
         with:
-          arch: aarch64
+          arch: ${{ matrix.target }}
           distro: ubuntu22.04
           githubToken: ${{ github.token }}
           dockerRunArgs: |
