@@ -100,6 +100,7 @@ jobs:
     strategy:
       matrix:
         target: [ x86_64 ]
+        manylinux: [ auto, 2_28, 2_17 ]
         python-version:
           - '3.8'
           - '3.9'
@@ -115,7 +116,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          manylinux: auto
+          manylinux: ${{ matrix.manylinux }}
           args: --release --out dist
           maturin-version: "v1.7.4"
       - name: Install built wheel
@@ -125,7 +126,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.target }}-${{ matrix.python-version }}-linux
+          name: wheels-${{ matrix.target }}-${{ matrix.python-version }}-manylinux-${{ matrix.manylinux }}-linux
           path: dist
 
   linux-cross:
@@ -301,7 +302,7 @@ jobs:
         with:
           name: wheels
           pattern: wheels-*
-          delete-merged: true
+          delete-merged: false
 
   release:
     name: Release
