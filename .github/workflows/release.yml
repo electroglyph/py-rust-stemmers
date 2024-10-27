@@ -50,24 +50,11 @@ jobs:
       - name: Install built wheel
         run: |
           pip install --find-links dist/ --force-reinstall ${{ env.PACKAGE_NAME }}
-      - name: Build wheels - universal2
-        uses: PyO3/maturin-action@v1
-        with:
-          args: --release --universal2 --out dist-universal2
-          maturin-version: "v1.7.4"
-      - name: Install built wheel - universal2
-        run: |
-          pip install --find-links dist-universal2/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact/merge@v4
         with:
           name: wheels
           path: dist
-      - name: Upload wheels - universal2
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels
-          path: dist-universal2
 
 
   windows:
@@ -103,7 +90,7 @@ jobs:
         run: |
           python -m pip install --find-links dist/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact/merge@v4
         with:
           name: wheels
           path: dist
@@ -112,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [x86_64]
+        target: [ x86_64 ]
         python-version:
           - '3.8'
           - '3.9'
@@ -136,7 +123,7 @@ jobs:
         run: |
           pip install --find-links dist/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact/merge@v4
         with:
           name: wheels
           path: dist
@@ -145,7 +132,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [aarch64, armv7]
+        target: [ aarch64, armv7 ]
         python-version:
           - '3.8'
           - '3.9'
@@ -178,7 +165,7 @@ jobs:
           run: |
             pip3 install ${{ env.PACKAGE_NAME }} --no-index --find-links dist/ --force-reinstall
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact/merge@v4
         with:
           name: wheels
           path: dist
@@ -218,7 +205,7 @@ jobs:
             apk add py3-pip
             pip3 install ${{ env.PACKAGE_NAME }} --no-index --find-links /io/dist/ --force-reinstall
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact/merge@v4
         with:
           name: wheels
           path: dist
@@ -233,11 +220,11 @@ jobs:
           - target: armv7-unknown-linux-musleabihf
             arch: armv7
         python-version:
-            - '3.8'
-            - '3.9'
-            - '3.10'
-            - '3.11'
-            - '3.12'
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -261,7 +248,7 @@ jobs:
           run: |
             pip3 install ${{ env.PACKAGE_NAME }} --no-index --find-links dist/ --force-reinstall
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact/merge@v4
         with:
           name: wheels
           path: dist
@@ -270,8 +257,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        target: [x86_64, aarch64]
+        os: [ ubuntu-latest, macos-latest ]
+        target: [ x86_64, aarch64 ]
         python-version:
           - '3.8'
           - '3.9'
@@ -295,7 +282,7 @@ jobs:
         run: |
           pip install --find-links dist/ --force-reinstall ${{ env.PACKAGE_NAME }}
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact/merge@v4
         with:
           name: wheels
           path: dist
